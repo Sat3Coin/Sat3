@@ -1,0 +1,107 @@
+﻿How to build a Qt & daemon Sat3coin Pi wallet
+Brought to you by
+Jeremy Lee a.k.a “krewshul”
+
+
+
+
+        Outlined below you will find the step by step instructions on how to compile a Qt wallet and a daemon wallet for the Raspberry Pi. (I personally have tested on a Pi3 and a Pi zero w.)
+
+
+
+
+
+
+1. Go and get yourself a Raspberry Pi. You can find them on ebay, amazon, just about everywhere…. I think i saw them at Walmart.
+   1. https://thepihut.com/products/raspberry-pi-zero-w?src=raspberrypi
+1. Download and install Raspbian-jessie. I had issues with the one that comes on Noobs pre-installed (raspbian-stretch) and raspbian jessie-lite. You will have to reformat and flash your micro sd or sd card. I like the software Etcher. 
+   1. Etcher: https://etcher.io/
+   2. Raspbian jessie:  https://downloads.raspberrypi.org/raspbian/images/raspbian-2017-07-05/2017-07-05-raspbian-jessie.zip 
+   3. If you are using a micro sd, then insert it into the adapter and plug into your sd card reader.
+   4. Turn on Etcher and it should find the card.
+   5. Press the button that says “FLASH” and it then wait……
+   6. Once completed, remove from the adapter, insert into the Pi and turn on. It will automatically boot to desktop.
+1. TIME TO START THE COMPILING OF YOUR SAT3COIN WALLET
+   1. Open up the terminal on your pi. It should be up in the left hand corner of the screen. It has the text  “ >_ “ on it.
+   2. Lets update first
+* sudo apt-get update
+   1. Next we need a swapfile
+      * sudo dphys-swapfile swapoff
+      * CONF_SWAPSIZE=1024
+      * sudo dphys-swapfile swapon
+   1. Now install the dependencies
+* sudo apt-get install qt4-qmake libqt4-dev build-essential libboost-dev -y  
+* sudo apt-get install libboost-system-dev 
+libboost-filesystem-dev libboost-program-options-dev -y  
+* sudo apt-get install libboost-thread-dev libssl-dev libminiupnpc-dev libqrencode-dev git -y
+dev libboost-program-options-dev -y  
+* sudo apt-get install libboost-thread-dev libssl-dev libminiupnpc-dev libqrencode-dev git -y
+
+
+         you got like 20 minutes for that to complete.  Time for a break!
+   1. After it is done installing we need to build the Berkeley DB ourselves
+* wget http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz 
+* tar -xzvf db-4.8.30.NC.tar.gz 
+* cd db-4.8.30.NC/build_unix/
+* ../dist/configure --enable-cxx --disable-shared  
+* make
+* sudo make install
+* cd ~
+   1. Now let’s make it so the makefile can find the Berkeley DB
+* export CPATH="/usr/local/BerkeleyDB.4.8/include" 
+* export LIBRARY_PATH="/usr/local/BerkeleyDB.4.8/lib"
+   1. LET’S COMPILE!!!
+* git clone https://github.com/Sat3Coin/sat3.git 
+* cd sat3
+* qmake "USE_UPNP=1" (this makes your Makefile)
+   1. To make the daemon (if you prefer a Qt wallet then skip this and move on to “i”
+      * cd src
+      * make -f makefile.unix
+(go smoke another cigarette… finish off the 6 pack. This is gonna be a minute)
+After that is finished you will see a new file file in that directory called “sat3coind”. That is your daemon. If you don't want a graphical interface and prefer command line wallets then there you go. Just type “ ./sat3coind “ (without the quotations) to start it while in that directory.  
+   1. To make a Qt (you need to be in the sat3 directory) so, from the src directory type
+      * cd ..
+      * make
+   1. Almost done, we need a folder for the Qt shortcut
+      * nano /home/pi/Desktop/sat3coin-qt.desktop
+   1. In the nano screen add 
+      * [Desktop Entry]
+Name=sat3coin-QT
+Comment=sat3coin GUI
+Type=Application
+Encoding=UTF-8
+Exec=env LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/BerkeleyDB.4.8/lib:/home/pi/openssl/lib" /home/pi/trezarcoin/trezarcoin-qt
+Terminal=false
+Categories=None;
+                
+Now save and exit.
+
+
+   1. Need to make a conf. File
+   * nano /home/pi/.Sat3coin/sat3coin.conf
+   1.  In the nano add
+   * daemon=1
+server=1
+rpcuser=(username)
+rpcpassword=(strong password)
+
+
+Change the “username” and “strong password” to whatever you like.
+
+
+Now save and exit, double click the file you made on the desktop for the Qt and look at that beautiful sat3 wallet you made. You have now compiled a Sat3 qt and a daemon on the pi!!!!
+
+
+If you found this useful and would like to donate
+
+
+BTC
+1LRsDGKP9NjkmSo57jXGqHrpxJ5jFtqg3D
+
+
+LTC
+LPVWYXrr76hTvigMSigT2WVESjgGw69Kyb
+
+
+Doge
+DMJAe9nTwRgUUfvo3vdTCoNb59a32tvy5N
