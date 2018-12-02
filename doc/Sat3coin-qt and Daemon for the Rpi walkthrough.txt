@@ -31,8 +31,12 @@ Download and install Raspbian-jessie. I had issues with the one that comes on No
    B. Lets update first
         * sudo apt-get update
    C. Next we need a swapfile
-        * sudo dphys-swapfile swapoff
+        * sudo ~/etc/dphys-swapfile swapoff
+        * sudo nano ~/etc/dphys-swapfile swapoff
         * CONF_SWAPSIZE=1024
+        * Ctrl o
+        * ENTER
+        * Ctrl x
         * sudo dphys-swapfile swapon
    D. Now install the dependencies
         * sudo apt-get install qt4-qmake libqt4-dev build-essential libboost-dev -y
