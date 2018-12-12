@@ -31,8 +31,7 @@ Download and install Raspbian-jessie. I had issues with the one that comes on No
    B. Lets update first
         * sudo apt-get update
    C. Next we need a swapfile
-        * sudo ~/etc/dphys-swapfile swapoff
-        * sudo nano ~/etc/dphys-swapfile swapoff
+        * sudo nano /etc/dphys-swapfile
         * CONF_SWAPSIZE=1024
         * Ctrl o
         * ENTER
